@@ -1,0 +1,4 @@
+rootProject.name = 'ProyectoADA2'
+include 'src:main:Planificador'
+findProject(':src:main:Planificador')?.name = 'Planificador'
+
