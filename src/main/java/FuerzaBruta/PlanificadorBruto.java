@@ -55,6 +55,7 @@ public class PlanificadorBruto {
         return mejorCalendario;
     }
 
+
     private void permutaciones(int[] equipoIndices, int inicio, int n, int permutacionActual) {
         if (inicio == n) {
             double costoActual = calcularCosto(equipoIndices);
