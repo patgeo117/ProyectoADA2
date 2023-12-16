@@ -6,34 +6,48 @@ import java.util.Random;
 public class projectIngenuo {
     /**
      * Genera una matriz de tamaño 2(n-1) x n que contiene una permutación de los números del 1 al n en cada fila.
-     * @param n El número de equipos.
+     * @param equipos El número de equipos.
      * @return Una matriz de tamaño 2(n-1) x n que contiene una permutación de los números del 1 al n en cada fila.
      */
-    public static int[][] generateArray(int n) {
-        if (n % 2 != 0) {
+    public static int[][] generateArray(int equipos) {
+        if (equipos % 2 != 0) {
             throw new IllegalArgumentException("El valor de n debe ser par.");
         }
 
-        int[][] matriz = new int[2 * (n - 1)][n];
+        int[][] matriz = new int[2 * (equipos - 1)][equipos];
 
-        int intentosMaximos = 20000;
+        int intentosMaximos = factorial(equipos)*factorial(equipos);
         int intentos = 0;
 
-        while (!checkNoDuplicates(matriz) && intentos < intentosMaximos) {
-            // generar matriz superior
-            for (int i = 0; i < (n / 2) + 1; i++) {
-                matriz[i] = generateRandomPermutation(n);
-            }
-
-            for (int i = 1 + (n / 2); i < 2 * (n - 1); i++) {
-                matriz[i] = Arrays.copyOf(generateInverse(matriz[i - (n / 2) - 1]), n);
-            }
+        while (!checkNoDuplicatesValue(matriz) && (intentos < intentosMaximos)) {
+            generarCalendario(matriz, equipos);
             intentos++;
         }
 
         if (intentos >= intentosMaximos) {
             System.out.println("No se pudo generar una matriz válida después de " + intentosMaximos + " intentos.");
             // Puedes decidir qué hacer en este caso, como lanzar una excepción.
+        }
+        return matriz;
+    }
+    /**
+     * Genera una matriz de tamaño 2(n-1) x n que contiene una permutación de los números del 1 al n en cada fila.
+     * @param matriz La permutación a invertir.
+     * @param n El número de equipos.
+     * @return Una matriz de tamaño 2(n-1) x n que contiene una permutación de los números del 1 al n en cada fila.
+     */
+    private static int[][] generarCalendario(int[][] matriz, int n) {
+        // generar matriz superior
+        for (int i = 0; i < (n / 2) + 1; i++) {
+            matriz[i] = generateRandomPermutation(n);
+        }
+
+        // generar matriz inferior (invertir la mitad superior)
+        for (int i = (n / 2) + 1; i < 2 * (n - 1); i++) {
+            matriz[i] = Arrays.copyOf(matriz[i - (n / 2) - 1], n);
+            for (int j = 0; j < n; j++) {
+                matriz[i][j] = -matriz[i][j];
+            }
         }
         return matriz;
     }
@@ -59,25 +73,11 @@ public class projectIngenuo {
         return permutation;
     }
     /**
-     * Genera la inversa de las permutaciones de la matriz superior .
-     * @param array La permutación a invertir.
-     * @return La inversa de la permutación.
-     */
-    private static int[] generateInverse(int[] array) {
-        int[] inverse = new int[array.length];
-
-        for (int i = 0; i < array.length; i++) {
-            inverse[i] = -array[i];
-        }
-
-        return inverse;
-    }
-    /**
      * Verifica que no haya duplicados en la matriz.
      * @param matrix La matriz a verificar.
      * @return true si no hay duplicados, false en caso contrario.
      */
-    private static boolean checkNoDuplicates(int[][] matrix) {
+    private static boolean checkNoDuplicatesValue(int[][] matrix) {
         for (int j = 0; j < matrix[0].length; j++) {
             int[] column = new int[matrix.length];
 
@@ -85,7 +85,7 @@ public class projectIngenuo {
                 column[i] = matrix[i][j];
             }
 
-            if (!checkNoDuplicates(column) || !checkColumValor(matrix)) {
+            if (!checkNoDuplicatesArray(column) || !checkColumValor(matrix)) {
                 return false;
             }
         }
@@ -96,7 +96,7 @@ public class projectIngenuo {
      * @param array El arreglo a verificar.
      * @return true si no hay duplicados, false en caso contrario.
      */
-    private static boolean checkNoDuplicates(int[] array) {
+    private static boolean checkNoDuplicatesArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = i + 1; j < array.length; j++) {
                 if (array[i] == array[j]) {
@@ -106,7 +106,6 @@ public class projectIngenuo {
         }
         return true;
     }
-
     /**
      * Verificar que no los valores no coincidan con la columna .
      * @param matriz El arreglo a verificar.
@@ -114,13 +113,22 @@ public class projectIngenuo {
      */
     private static boolean checkColumValor(int[][] matriz) {
         for (int j = 0; j < matriz[0].length; j++) {
-            for (int i = 0; i < matriz.length; i++) {
-                if (matriz[i][j] == j + 1) {
+            for (int[] ints : matriz) {
+                if (ints[j] == j + 1) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private static int factorial(int n) {
+        int factorial = 1;
+        for (int i = 2; i <= n; i++) {
+            factorial *= i;
+        }
+
+        return factorial;
     }
 
     /**
@@ -137,7 +145,7 @@ public class projectIngenuo {
      * @param args Los argumentos de la línea de comandos.
      */
     public static void main(String[] args) {
-        int nValue = 4;
+        int nValue = 4*2;
         int[][] generatedArray = generateArray(nValue);
         printMatrix(generatedArray);
     }
