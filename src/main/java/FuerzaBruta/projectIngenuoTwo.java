@@ -1,11 +1,13 @@
 package FuerzaBruta;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class projectIngenuoTwo {
     public static void main(String[] args) {
-        int n =6; // Puedes ajustar el valor de n según tus necesidades
+        int n = 4; // Puedes ajustar el valor de n según tus necesidades
         int[][] calendario = generarCalendario(n);
 
         // Imprimir el calendario generado
@@ -14,28 +16,39 @@ public class projectIngenuoTwo {
         }
     }
 
-    public static int[][] generarCalendario(int n) {
+    private static final int MAX_INTENTOS = 200000000;
+    private static int[][] generarCalendario(int n) {
+        int[][] calendario;
+        int intentos = 0;
+
+        do {
+            calendario = generarCalendarioSinVerificacion(n);
+            intentos++;
+        } while ((intentos < MAX_INTENTOS) && (!checkNoDuplicatesValue(calendario) || !checkColumValor(calendario)));
+
+        if (intentos >= MAX_INTENTOS) {
+            System.out.println("Se alcanzó el límite de intentos y no se pudo generar un calendario válido.");
+        }
+
+        return calendario;
+    }
+    private static int[][] generarCalendarioSinVerificacion(int n) {
         int[][] calendario = new int[2 * (n - 1)][n];
-
-        for (int i = 0; i < n - 1; i++) {
-            int[] permutacion = generarPermutacionSinDuplicados(n, calendario);
+        //mitad superior
+        for (int i = 0; i < n-1; i++) {
+            int[] permutacion = generarPermutacion(n);
             calendario[i] = permutacion;
-
-            // Generar la permutación opuesta (negativos)
+            // mitad inferior
             for (int j = 0; j < n; j++) {
                 calendario[i + n - 1][j] = -permutacion[j];
             }
         }
 
-        // Verificar restricciones adicionales
-        while (!checkNoDuplicatesValue(calendario)) {
-            calendario = generarCalendario(n); // Regenerar si no cumple con las restricciones
-        }
-
         return calendario;
     }
 
-    public static int[] generarPermutacion(int n) {
+    // Método para generar una permutación aleatoria de los números del 1 al n
+    private static int[] generarPermutacion(int n) {
         int[] permutation = new int[n];
 
         for (int i = 0; i < n; i++) {
@@ -51,64 +64,18 @@ public class projectIngenuoTwo {
 
         return permutation;
     }
-
-    public static int[] generarPermutacionSinDuplicados(int n, int[][] matrix) {
-        int[] permutation = generarPermutacion(n);
-
-        // Verificar duplicados y regenerar si es necesario
-        while (tieneDuplicados(permutation, matrix)) {
-            permutation = generarPermutacion(n);
-        }
-
-        return permutation;
-    }
-
-    private static boolean checkNoDuplicatesValue(int[][] matrix) {
-        for (int j = 0; j < matrix[0].length; j++) {
-            int[] column = new int[matrix.length];
-
-            for (int i = 0; i < matrix.length; i++) {
-                column[i] = matrix[i][j];
-            }
-
-            // Imprimir los valores de la columna después de llenarla
-            System.out.print("Columna " + j + ": ");
-            for (int i = 0; i < column.length; i++) {
-                System.out.print(column[i] + " ");
-            }
-            System.out.println();
-
-            // Verificar si hay duplicados en la columna
-            if (tieneDuplicados(column, matrix)) {
-                System.out.println("La columna " + j + " tiene duplicados.");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean tieneDuplicados(int[] column, int[][] matrix) {
-        for (int i = 0; i < column.length; i++) {
-            for (int j = 0; j < matrix.length; j++) {
-                if (matrix[j][i] == column[i]) {
-                    return true;  // Se encontró un duplicado en la columna
-                }
-            }
-        }
-        return false;  // No se encontraron duplicados
-    }
-
-
     /**
-     * Verifica que no haya duplicados en el arreglo.
-     * @param array El arreglo a verificar.
+     * Verifica que no haya valores duplicados en las columnas de la matriz.
+     * @param matrix La matriz a verificar.
      * @return true si no hay duplicados, false en caso contrario.
      */
-    private static boolean checkNoDuplicatesArray(int[] array) {
-        for (int i = 0; i < array.length; i++) {
-            for (int j = i + 1; j < array.length; j++) {
-                if (array[i] == array[j]) {
+    private static boolean checkNoDuplicatesValue(int[][] matrix) {
+        int n = matrix[0].length;
+
+        for (int j = 0; j < n; j++) {
+            Set<Integer> valuesColumn = new HashSet<>();
+            for (int[] ints : matrix) {
+                if (!valuesColumn.add(ints[j])) {
                     return false;
                 }
             }
