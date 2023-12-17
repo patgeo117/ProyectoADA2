@@ -18,19 +18,15 @@ public class projectIngenuoTwo {
         int[][] calendario = new int[2 * (n - 1)][n];
         //mitad superior
         for (int i = 0; i < n-1; i++) {
-            calendario[i] = generarPermutacion(n);
-        }
-        // generar matriz inferior (invertir la mitad superior)
-        for (int i = n-1; i < 2 * (n - 1); i++) {
-            //calendario[i] = Arrays.copyOf(calendario[i - (n / 2)-1], n);
-            for (int j = 0; j < n; j++) {
-                calendario[i][j] = -calendario[i][j];
+            int[] permutacion = generarPermutacion(n);
+            calendario[i] = permutacion;
+            for(int j = 0; j < n; j++){
+                calendario[i+n-1][j] = -permutacion[j];
             }
         }
 
-
         // Verificar restricciones adicionales
-        while (!checkNoDuplicatesArray(calendario) || !checkColumValor(calendario)) {
+        while (!checkNoDuplicatesValue(calendario)){
             calendario = generarCalendario(n); // Regenerar si no cumple con las restricciones
         }
 
@@ -54,8 +50,34 @@ public class projectIngenuoTwo {
 
         return permutation;
     }
+    /**
+     * Verifica que no haya valores duplicados en las columnas de la matriz.
+     * @param matrix La matriz a verificar.
+     * @return true si no hay duplicados, false en caso contrario.
+     */
+    private static boolean checkNoDuplicatesValue(int[][] matrix) {
+        int[] column = new int[matrix.length];
+        for (int j = 0; j < matrix[0].length; j++) {
+            for (int i = 0; i < matrix.length; i++) {
+                if (column.equals(matrix[i][j])) {
+                    generarPermutacion(matrix[0].length);
+                }
+            }
 
-    private static boolean checkNoDuplicatesArray(int[][] array) {
+            if (!checkNoDuplicatesArray(column) || !checkColumValor(matrix)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Verifica que no haya duplicados en el arreglo.
+     * @param array El arreglo a verificar.
+     * @return true si no hay duplicados, false en caso contrario.
+     */
+    private static boolean checkNoDuplicatesArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = i + 1; j < array.length; j++) {
                 if (array[i] == array[j]) {
@@ -70,7 +92,7 @@ public class projectIngenuoTwo {
      * @param matrix La matriz a verificar.
      * @return true si no hay duplicados, false en caso contrario.
      */
-    private static boolean checkColumValor(int[][] matrix) {
+    public static boolean checkColumValor(int[][] matrix) {
         for (int j = 0; j < matrix[0].length; j++) {
             for (int[] ints : matrix) {
                 if (ints[j] == j + 1) {
@@ -81,6 +103,3 @@ public class projectIngenuoTwo {
         return true;
     }
 }
-
-
-

@@ -37,20 +37,20 @@ public class projectIngenuo {
      * @return Una matriz de tamaño 2(n-1) x n que contiene una permutación de los números del 1 al n en cada fila.
      */
     private static int[][] generarCalendario(int[][] matriz, int n) {
-        // generar matriz superior
-        for (int i = 0; i < (n / 2) + 1; i++) {
-            matriz[i] = generateRandomPermutation(n);
-        }
-
-        // generar matriz inferior (invertir la mitad superior)
-        for (int i = (n / 2) + 1; i < 2 * (n - 1); i++) {
-            matriz[i] = Arrays.copyOf(matriz[i - (n / 2) - 1], n);
+        int[][] calendario = new int[2 * (n - 1)][n];
+        //mitad superior
+        for (int i = 0; i < n-1; i++) {
+            int[] permutacion = generateRandomPermutation(n);
+            calendario[i] = permutacion;
             for (int j = 0; j < n; j++) {
-                matriz[i][j] = -matriz[i][j];
+                calendario[i + n - 1][j] = -permutacion[j];
+
             }
         }
-        return matriz;
+
+        return calendario;
     }
+
     /**
      * Genera una permutación aleatoria de los números del 1 al n.
      * @param n El número de equipos.
@@ -145,7 +145,7 @@ public class projectIngenuo {
      * @param args Los argumentos de la línea de comandos.
      */
     public static void main(String[] args) {
-        int nValue = 4*2;
+        int nValue = 2;
         int[][] generatedArray = generateArray(nValue);
         printMatrix(generatedArray);
     }
