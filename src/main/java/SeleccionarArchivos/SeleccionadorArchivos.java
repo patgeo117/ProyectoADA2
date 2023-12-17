@@ -85,7 +85,7 @@ public class SeleccionadorArchivos extends JFrame {
                 int[][] calendario = planificador.resolverCalendarioBruto();
 
                 // Escritura de salida al archivo
-                escribirSalida("src/main/SalidaDatos/salida.txt", n, minimo, maximo, calendario);
+                escribirSalida("src/main/Datos/salida.txt", n, minimo, maximo, calendario);
 
                 System.out.println("Salida generada con éxito.");
                 planificador.imprimirMejorCalendario();

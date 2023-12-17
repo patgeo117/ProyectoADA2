@@ -16,24 +16,25 @@ public class projectIngenuoTwo {
 
     public static int[][] generarCalendario(int n) {
         int[][] calendario = new int[2 * (n - 1)][n];
-        //mitad superior
-        for (int i = 0; i < n-1; i++) {
-            int[] permutacion = generarPermutacion(n);
+
+        for (int i = 0; i < n - 1; i++) {
+            int[] permutacion = generarPermutacionSinDuplicados(n, calendario);
             calendario[i] = permutacion;
-            for(int j = 0; j < n; j++){
-                calendario[i+n-1][j] = -permutacion[j];
+
+            // Generar la permutación opuesta (negativos)
+            for (int j = 0; j < n; j++) {
+                calendario[i + n - 1][j] = -permutacion[j];
             }
         }
 
         // Verificar restricciones adicionales
-        while (!checkNoDuplicatesValue(calendario)){
+        while (!checkNoDuplicatesValue(calendario)) {
             calendario = generarCalendario(n); // Regenerar si no cumple con las restricciones
         }
 
         return calendario;
     }
 
-    // Método para generar una permutación aleatoria de los números del 1 al n
     public static int[] generarPermutacion(int n) {
         int[] permutation = new int[n];
 
@@ -50,25 +51,52 @@ public class projectIngenuoTwo {
 
         return permutation;
     }
-    /**
-     * Verifica que no haya valores duplicados en las columnas de la matriz.
-     * @param matrix La matriz a verificar.
-     * @return true si no hay duplicados, false en caso contrario.
-     */
+
+    public static int[] generarPermutacionSinDuplicados(int n, int[][] matrix) {
+        int[] permutation = generarPermutacion(n);
+
+        // Verificar duplicados y regenerar si es necesario
+        while (tieneDuplicados(permutation, matrix)) {
+            permutation = generarPermutacion(n);
+        }
+
+        return permutation;
+    }
+
     private static boolean checkNoDuplicatesValue(int[][] matrix) {
-        int[] column = new int[matrix.length];
         for (int j = 0; j < matrix[0].length; j++) {
+            int[] column = new int[matrix.length];
+
             for (int i = 0; i < matrix.length; i++) {
-                if (column.equals(matrix[i][j])) {
-                    generarPermutacion(matrix[0].length);
-                }
+                column[i] = matrix[i][j];
             }
 
-            if (!checkNoDuplicatesArray(column) || !checkColumValor(matrix)) {
+            // Imprimir los valores de la columna después de llenarla
+            System.out.print("Columna " + j + ": ");
+            for (int i = 0; i < column.length; i++) {
+                System.out.print(column[i] + " ");
+            }
+            System.out.println();
+
+            // Verificar si hay duplicados en la columna
+            if (tieneDuplicados(column, matrix)) {
+                System.out.println("La columna " + j + " tiene duplicados.");
                 return false;
             }
         }
+
         return true;
+    }
+
+    public static boolean tieneDuplicados(int[] column, int[][] matrix) {
+        for (int i = 0; i < column.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (matrix[j][i] == column[i]) {
+                    return true;  // Se encontró un duplicado en la columna
+                }
+            }
+        }
+        return false;  // No se encontraron duplicados
     }
 
 
