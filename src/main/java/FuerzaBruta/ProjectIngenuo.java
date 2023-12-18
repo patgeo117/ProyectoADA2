@@ -5,14 +5,32 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class Pruebas {
-
+/**
+ * Este programa genera un calendario de partidos de fútbol de ida y vuelta
+ * para un número par de equipos.
+ * El calendario generado no tiene partidos repetidos ni equipos que jueguen contra si mismos.
+ */
+public class ProjectIngenuo {
     public static void main(String[] args) {
-        int n = 8;
-        int[][] calendario = generarCalendario(n);
-        imprimirCalendario(calendario);
+        int n = 6;
+
+        try {
+            validarNumeroEquipos(n);
+            int[][] calendario = generarCalendario(n);
+            imprimirCalendario(calendario);
+
+            // Resto del código
+        } catch (NumeroEquiposImparException e) {
+            System.out.println("Error: El número de equipos debe ser par.");
+        }
+
     }
 
+    /**
+     * Genera un calendario de partidos de fútbol de ida y vuelta para un número par de equipos.
+     * @param n El número de equipos.
+     * @return Una matriz de n x 2(n-1) con los partidos de fútbol de ida y vuelta.
+     */
     public static int[][] generarCalendario(int n) {
         int[][] mitadCalendario = generarMitadCalendario(n);
         return combinarCalendario(n, mitadCalendario);
@@ -147,6 +165,18 @@ public class Pruebas {
     public static void imprimirCalendario(int[][] calendario) {
         for (int[] i : calendario) {
             System.out.println(Arrays.toString(i));
+        }
+    }
+
+    private static void validarNumeroEquipos(int n) {
+        if (n % 2 != 0) {
+            throw new NumeroEquiposImparException("El número de equipos debe ser par.");
+        }
+    }
+
+    public static class NumeroEquiposImparException extends RuntimeException {
+        public NumeroEquiposImparException(String message) {
+            super(message);
         }
     }
 }

@@ -6,6 +6,11 @@ import java.util.Random;
 import java.util.Set;
 
 public class projectIngenuoTwo {
+    /*
+    * Este programa genera un calendario de partidos de fútbol de ida y vuelta
+    * para un número par de equipos.
+    * El calendario generado no tiene partidos repetidos ni equipos que jueguen
+     */
     public static void main(String[] args) {
         int n = 4; // Puedes ajustar el valor de n según tus necesidades
         int[][] calendario = generarCalendario(n);
