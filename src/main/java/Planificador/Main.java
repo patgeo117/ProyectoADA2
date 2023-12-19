@@ -2,6 +2,7 @@ package Planificador;
 
 import java.util.Arrays;
 
+
 /**
  * Clase principal que contiene el método main para generar e imprimir un calendario de partidos de fútbol.
  */

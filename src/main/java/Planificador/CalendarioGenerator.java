@@ -4,6 +4,7 @@ import java.util.*;
 
 /**
  * Esta clase proporciona funcionalidad para generar un calendario de partidos de fútbol.
+ *
  */
 public class CalendarioGenerator {
 

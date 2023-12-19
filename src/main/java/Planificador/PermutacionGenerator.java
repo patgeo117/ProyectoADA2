@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * Esta clase proporciona métodos para generar permutaciones aleatorias de números enteros del 1 al n.
+ *
  */
 public class PermutacionGenerator {
 

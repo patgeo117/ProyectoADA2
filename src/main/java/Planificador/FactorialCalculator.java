@@ -2,6 +2,7 @@ package Planificador;
 
 /**
  * Esta clase proporciona un método estático para calcular el factorial de un número.
+ *
  */
 public class FactorialCalculator {
 
