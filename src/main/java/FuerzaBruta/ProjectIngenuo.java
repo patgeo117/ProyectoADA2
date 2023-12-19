@@ -232,12 +232,13 @@ public class ProjectIngenuo {
                 .filter(i -> permutaciones[i] > 0)
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = (i + 1));
 
-       /* if(IntStream.range(0, permutaciones.length)
+        if(IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
                 .count() == IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] < 0)
                 .count()){
-        }*/
+        }
+
         // Asinar el signo negativo a la mitad de los equipos.
         IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
