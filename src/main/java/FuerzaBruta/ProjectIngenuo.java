@@ -1,6 +1,7 @@
 package FuerzaBruta;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Esta clase representa un programa que genera un calendario de partidos de fútbol de ida y vuelta
@@ -15,7 +16,7 @@ public class ProjectIngenuo {
      * @param args Argumentos de la línea de comandos (no se utilizan en este programa).
      */
     public static void main(String[] args) {
-        int n = 6;
+        int n = 8;
 
         try {
             validarNumeroEquipos(n);
@@ -170,7 +171,6 @@ public class ProjectIngenuo {
     }
 
     private static int[] checkGameEquipos(int[] permutaciones){
-        boolean aux = true;
         for(int i: permutaciones){
             for(int j = 0; j<permutaciones.length;j++){
                 if(i == permutaciones[j]){
@@ -178,6 +178,12 @@ public class ProjectIngenuo {
                 }
             }
         }
+
+        IntStream.range(0, permutaciones.length)
+                .filter(i -> permutaciones[i] > 0)
+                .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));
+
+
         return permutaciones;
     }
     /**

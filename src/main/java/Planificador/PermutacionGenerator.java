@@ -3,6 +3,7 @@ package Planificador;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Esta clase proporciona métodos para generar permutaciones aleatorias de números enteros del 1 al n.
@@ -72,6 +73,10 @@ public class PermutacionGenerator {
                 }
             }
         }
+        IntStream.range(0, permutaciones.length)
+                .filter(i -> permutaciones[i] > 0)
+                .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));
+
         return permutaciones;
     }
 }

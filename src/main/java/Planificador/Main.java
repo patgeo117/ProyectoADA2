@@ -14,7 +14,7 @@ public class Main {
      * @param args Argumentos de la línea de comandos (no se utilizan en este programa).
      */
     public static void main(String[] args) {
-        int n = 6;
+        int n = 10;
 
         try {
             // Validar que el número de equipos sea par
