@@ -39,24 +39,31 @@ public class CalendarioGenerator {
     }
 
     /**
+     * El número máximo de intentos para generar un calendario único.
+     */
+    private static final int MAX_INTENTOS = 1000000000;
+
+    /**
      * Genera la mitad del calendario aleatorio para un número par de equipos.
      *
      * @param n El número de equipos.
      * @return La mitad del calendario generada.
+     * @throws RuntimeException Si no se puede generar un calendario único
+     *         dentro del límite de intentos.
      */
-    private static int[][] generarMitadCalendario(int n) {
-        int MAX_INTENTOS = 1000000000;
-        int[][] mitadCalendario = new int[(n - 1)][n];
+    public static int[][] generarMitadCalendario(int n) {
+        int[][] mitadCalendario = new int[n - 1][n];
 
         int intentos = 0;
 
         while (intentos < MAX_INTENTOS) {
-            for (int i = 0; i < n - 1; i++) {
-                mitadCalendario[i] = PermutacionGenerator.generarPermutacion(n);
-            }
+            generarPermutacionesUnicas(n, mitadCalendario);
             intentos++;
 
-            if (MatrixValidator.checkNoDuplicatesValue(mitadCalendario) && MatrixValidator.checkNoValuesInColumns(mitadCalendario)) {
+            // Verifica si la matriz generada es válida
+            if (MatrixValidator.checkNoDuplicatesValue(mitadCalendario) &&
+                    MatrixValidator.checkNoValuesInColumns(mitadCalendario)) {
+                // Imprime la matriz y devuelve el resultado
                 for (int[] i : mitadCalendario) {
                     System.out.println(Arrays.toString(i));
                 }
@@ -65,7 +72,41 @@ public class CalendarioGenerator {
             }
         }
 
+        // Lanza una excepción si no se puede generar un calendario válido
         throw new RuntimeException("Se alcanzó el límite de intentos sin generar un calendario válido.");
+    }
+
+    /**
+     * Genera permutaciones únicas y las asigna a la mitad del calendario.
+     *
+     * @param n El número de equipos.
+     * @param mitadCalendario La mitad del calendario a llenar con permutaciones únicas.
+     */
+    private static void generarPermutacionesUnicas(int n, int[][] mitadCalendario) {
+        for (int i = 0; i < n - 1; i++) {
+            int[] permutacion = PermutacionGenerator.generarPermutacion(n);
+            while (!esPermutacionUnica(permutacion, mitadCalendario, i)) {
+                permutacion = PermutacionGenerator.generarPermutacion(n);
+            }
+            mitadCalendario[i] = permutacion;
+        }
+    }
+
+    /**
+     * Verifica si una permutación es única en la mitad del calendario.
+     *
+     * @param permutacion La permutación a verificar.
+     * @param mitadCalendario La mitad del calendario actual.
+     * @param index El índice actual en la mitad del calendario.
+     * @return true si la permutación es única, false de lo contrario.
+     */
+    private static boolean esPermutacionUnica(int[] permutacion, int[][] mitadCalendario, int index) {
+        for (int i = 0; i < index; i++) {
+            if (Arrays.equals(permutacion, mitadCalendario[i])) {
+                return false; // Ya existe esta permutación
+            }
+        }
+        return true;
     }
 
     /**
