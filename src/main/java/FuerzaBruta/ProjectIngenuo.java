@@ -9,6 +9,12 @@ import java.util.stream.IntStream;
  * contra sí mismos.
  */
 public class ProjectIngenuo {
+    int[][] matrizCostos = {
+            {0, 745, 665, 929},
+            {745, 0, 80, 337},
+            {665, 80, 0, 380},
+            {929, 337, 380, 0}
+    };
 
     /**
      * Método principal que inicia la ejecución del programa.
@@ -16,7 +22,7 @@ public class ProjectIngenuo {
      * @param args Argumentos de la línea de comandos (no se utilizan en este programa).
      */
     public static void main(String[] args) {
-        int n = 8;
+        int n = 6;
 
         try {
             validarNumeroEquipos(n);
@@ -99,9 +105,12 @@ public class ProjectIngenuo {
         int n = matrix[0].length;
 
         for (int j = 0; j < n; j++) {
-            Set<Integer> valuesColumn = new HashSet<>();
+            Set<Integer> valuesColumn = new HashSet<>(matrix.length);
+
             for (int[] ints : matrix) {
-                if (!valuesColumn.add(ints[j])) {
+                int absoluteValue = Math.abs(ints[j]);
+
+                if (!valuesColumn.add(absoluteValue)) {
                     return false;
                 }
             }
@@ -129,11 +138,26 @@ public class ProjectIngenuo {
     }
 
     /**
-     * Genera una permutación aleatoria de números del 1 al n.
+     * Verifica si una permutación es válida, es decir, si ningún elemento está en su posición original.
      *
+     * @param permutation La permutación a verificar.
+     * @return true si la permutación es válida, false en caso contrario.
+     */
+
+    private static boolean esPermutacionValida(List<Integer> permutation) {
+        for (int i = 0; i < permutation.size(); i++) {
+            if (permutation.get(i) == i + 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Genera una permutación aleatoria de números del 1 al n.
      * @param n El número de elementos en la permutación.
      * @return La permutación generada.
      */
+
     public static int[] generarPermutacion(int n) {
         List<Integer> permutationList = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
@@ -151,44 +175,43 @@ public class ProjectIngenuo {
                 check[i] = permutationList.get(i);
             }
             intentos++;
-        } while (!esPermutacionValida(permutationList) && intentos < maxIntentos);
+        } while (!esPermutacionValida(permutationList) && (intentos < maxIntentos));
 
         if (intentos >= maxIntentos) {
             System.out.println("Se alcanzó el límite de intentos para generar permutaciones válidas.");
             return new int[n]; // O lanzar una excepción según tus necesidades.
         }
 
-        return checkGameEquipos(check);
+        return checkGameTeam(check);
     }
 
-    private static boolean esPermutacionValida(List<Integer> permutation) {
-        for (int i = 0; i < permutation.size(); i++) {
-            if (permutation.get(i) == i + 1) {
-                return false;
-            }
-        }
-        return true;
-    }
+    /**
+     * Genera una permutación aleatoria de números del 1 al n para asegurar que haya la mitad de equipos positivos y
+     * la mitad negativos en cada fila.
+     * @param permutaciones El número de elementos en la permutación.
+     * @return La permutación generada.
+     */
+    private static int[] checkGameTeam(int[] permutaciones){
+        // Verificar que cada equipo se enfrente con un oponente y ese oponente se enfrente con el equipo.
+        IntStream.range(0, permutaciones.length)
+                .filter(i -> permutaciones[i] > 0)
+                .forEach(i -> permutaciones[permutaciones[i] - 1] = (i + 1));
 
-    private static int[] checkGameEquipos(int[] permutaciones){
-        for(int i: permutaciones){
-            for(int j = 0; j<permutaciones.length;j++){
-                if(i == permutaciones[j]){
-                    permutaciones[i-1] = j+1;
-                }
-            }
-        }
-
+        // Asinar el signo negativo a la mitad de los equipos.
         IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));
 
-
         return permutaciones;
     }
+
+    private static int calcularCosto(int[][] calendario) {
+        // Implementa la lógica para calcular el costo total del calendario según tus necesidades.
+        // ...
+        return 0;
+    }
     /**
-     * Calcula el factorial de un número.
-     *
+     * Calcular el factorial de un número.
      * @param n El número para calcular el factorial.
      * @return El factorial de n.
      */
@@ -200,18 +223,6 @@ public class ProjectIngenuo {
 
         return factorial;
     }
-
-    /**
-     * Imprime el calendario de partidos en la consola.
-     *
-     * @param calendario La matriz que representa el calendario de partidos.
-     */
-    public static void imprimirCalendario(int[][] calendario) {
-        for (int[] i : calendario) {
-            System.out.println(Arrays.toString(i));
-        }
-    }
-
     /**
      * Valida que el número de equipos sea par. En caso contrario, lanza una excepción.
      *
@@ -234,6 +245,17 @@ public class ProjectIngenuo {
          */
         public NumeroEquiposImparException(String message) {
             super(message);
+        }
+    }
+
+    /**
+     * Imprime el calendario de partidos en la consola.
+     *
+     * @param calendario La matriz que representa el calendario de partidos.
+     */
+    public static void imprimirCalendario(int[][] calendario) {
+        for (int[] i : calendario) {
+            System.out.println(Arrays.toString(i));
         }
     }
 }

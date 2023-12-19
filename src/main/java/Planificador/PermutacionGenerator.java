@@ -1,13 +1,11 @@
 package Planificador;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.IntStream;
 
 /**
  * Esta clase proporciona métodos para generar permutaciones aleatorias de números enteros del 1 al n.
- *
  */
 public class PermutacionGenerator {
 
@@ -41,7 +39,7 @@ public class PermutacionGenerator {
             return new int[n]; // O lanzar una excepción según tus necesidades.
         }
 
-        return checkGameEquipos(check);
+        return checkGameTeam(check);
     }
 
     /**
@@ -60,19 +58,22 @@ public class PermutacionGenerator {
     }
 
     /**
-     * Ajusta la permutación para garantizar que no haya equipos repetidos.
-     *
-     * @param permutaciones La permutación a ajustar.
-     * @return La permutación ajustada.
+     * Genera una permutación aleatoria de números del 1 al n para asegurar que haya la mitad de equipos positivos y
+     * la mitad negativos en cada fila.
+     * @param permutaciones El número de elementos en la permutación.
+     * @return La permutación generada.
      */
-    private static int[] checkGameEquipos(int[] permutaciones) {
-        for (int i : permutaciones) {
-            for (int j = 0; j < permutaciones.length; j++) {
-                if (i == permutaciones[j]) {
-                    permutaciones[i - 1] = j + 1;
-                }
-            }
-        }
+    private static int[] checkGameTeam(int[] permutaciones){
+        // Verificar que cada equipo se enfrente con un oponente y ese oponente se enfrente con el equipo.
+        IntStream.range(0, permutaciones.length)
+                .filter(i -> permutaciones[i] > 0)
+                .forEach(i -> permutaciones[permutaciones[i] - 1] = (i + 1));
+
+        // Asinar el signo negativo a la mitad de los equipos.
+        IntStream.range(0, permutaciones.length)
+                .filter(i -> permutaciones[i] > 0)
+                .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));
+
         IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));

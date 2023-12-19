@@ -41,7 +41,7 @@ public class CalendarioGenerator {
     /**
      * El número máximo de intentos para generar un calendario único.
      */
-    private static final int MAX_INTENTOS = 1000000000;
+    public static final int MAX_INTENTOS = 1000000000;
 
     /**
      * Genera la mitad del calendario aleatorio para un número par de equipos.

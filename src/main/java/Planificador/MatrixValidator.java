@@ -5,7 +5,6 @@ import java.util.Set;
 
 /**
  * Clase que proporciona métodos para validar matrices de enteros.
- *
  */
 public class MatrixValidator {
 
@@ -19,9 +18,12 @@ public class MatrixValidator {
         int n = matrix[0].length;
 
         for (int j = 0; j < n; j++) {
-            Set<Integer> valuesColumn = new HashSet<>();
+            Set<Integer> valuesColumn = new HashSet<>(matrix.length);
+
             for (int[] ints : matrix) {
-                if (!valuesColumn.add(ints[j])) {
+                int absoluteValue = Math.abs(ints[j]);
+
+                if (!valuesColumn.add(absoluteValue)) {
                     return false;
                 }
             }

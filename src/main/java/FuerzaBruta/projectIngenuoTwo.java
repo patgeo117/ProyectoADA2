@@ -69,6 +69,7 @@ public class projectIngenuoTwo {
 
         return permutation;
     }
+
     /**
      * Verifica que no haya valores duplicados en las columnas de la matriz.
      * @param matrix La matriz a verificar.
