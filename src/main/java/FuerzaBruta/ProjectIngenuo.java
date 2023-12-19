@@ -176,10 +176,6 @@ public class ProjectIngenuo {
                 if(i == permutaciones[j]){
                     permutaciones[i-1] = j+1;
                 }
-                if (aux = true){
-                    permutaciones[i-1] = permutaciones[i-1] * -1;
-                }
-                
             }
         }
         return permutaciones;
