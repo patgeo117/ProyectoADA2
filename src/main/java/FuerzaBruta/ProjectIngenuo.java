@@ -89,7 +89,8 @@ public class ProjectIngenuo {
             intentos++;
 
 
-            if (checkNoDuplicatesValue(mitadCalendario) && checkNoValuesInColumns(mitadCalendario) && MaxMin(max, min, mitadCalendario)){
+            if (checkNoDuplicatesValue(mitadCalendario) && checkNoValuesInColumns(mitadCalendario)
+                    && MaxGame(max, min,mitadCalendario)) {
                 for (int[] i : mitadCalendario) {
                     System.out.println(Arrays.toString(i));
                 }
@@ -221,16 +222,14 @@ public class ProjectIngenuo {
     }
 
     /**
-     * Verificar los minimos y maximos de la gira
+     * Evaluar los minimos y maximos.
      * Nota: Permanencia --> Partidos locales, Gira --> Partidos visitantes
      * @param max Maximo paridos consecutivos
-     * @param min Minimo partidos consecutivos
-     *
+     * @param calDep Matriz de calendario de partidos
      */
-    private static boolean MaxMin(int max, int min, int[][] calDep) {
+    private static boolean MaxGame(int max, int min, int[][] calDep) {
         for (int j = 0; j < calDep[0].length; j++) {
             int consecutivos = 0;
-            boolean cumplidoMin = false;
 
             for (int[] ints : calDep) {
                 if (ints[j] > 0) {
@@ -241,23 +240,21 @@ public class ProjectIngenuo {
                     }
                 } else {
                     consecutivos = 0; // Reiniciar el contador si encuentra un valor negativo
-                    cumplidoMin = true; // Se reinicia el contador, y consideramos que ya cumplió con el mínimo
-                }
-
-                if (consecutivos >= min && consecutivos <= max) {
-                    //System.out.println("Minimo consecutivos permitidos " + consecutivos);
-                    cumplidoMin = true; // Se ha cumplido con el mínimo
                 }
             }
-
-            if (!cumplidoMin) {
-                //System.out.println("No se cumple el mínimo consecutivo.");
-                return false;
+            for (int[] ints : calDep) {
+                if (ints[j] < 0) {
+                    consecutivos++;
+                    if (consecutivos > max){
+                        return false;
+                    }
+                } else {
+                    consecutivos = 0; // Reiniciar el contador si encuentra un valor negativo
+                }
             }
         }
         return true;
     }
-
 
     /**
      * Calcula el costo total del calendario de partidos.
