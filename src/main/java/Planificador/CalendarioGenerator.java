@@ -12,23 +12,6 @@ public class CalendarioGenerator {
     PermutacionGenerator permutacionGenerator = new PermutacionGenerator();
     MatrixValidator matrixValidator = new MatrixValidator();
 
-    public static void main(String[] args) {
-        CalendarioGenerator calendarioGenerator = new CalendarioGenerator();
-        int n = 8;
-        int min = 1;
-        int max = 8;
-        try {
-            validarNumeroEquipos(n);
-            int[][] calendario = calendarioGenerator.generarCalendario(n, max, min);
-            imprimirCalendario(calendario);
-
-            // Resto del código
-        } catch (NumeroEquiposImparException e) {
-            System.out.println("Error: El número de equipos debe ser par.");
-        }
-
-    }
-
     /**
      * Genera un calendario de partidos de fútbol de ida y vuelta para un número par de equipos.
      *
@@ -67,7 +50,7 @@ public class CalendarioGenerator {
      * @return La mitad del calendario generada.
      */
     public int[][] generarMitadCalendario(int n, int max, int min) {
-        int MAX_INTENTOS = 100000000;
+        int MAX_INTENTOS = 1000000000;
         int[][] mitadCalendario = new int[(n - 1)][n];
 
         int intentos = 0;
@@ -101,29 +84,5 @@ public class CalendarioGenerator {
         }
     }
 
-    /**
-     * Valida que el número de equipos sea par. En caso contrario, lanza una excepción.
-     *
-     * @param n El número de equipos.
-     */
-    private  static void validarNumeroEquipos(int n) {
-        if (n % 2 != 0) {
-            throw new SeleccionadorArchivos.NumeroEquiposImparException("El número de equipos debe ser par.");
-        }
-    }
-
-    /**
-     * Excepción personalizada para indicar que el número de equipos es impar.
-     */
-    public static class NumeroEquiposImparException extends RuntimeException {
-        /**
-         * Construye una nueva instancia de la excepción con el mensaje especificado.
-         *
-         * @param message El mensaje de la excepción.
-         */
-        public NumeroEquiposImparException(String message) {
-            super(message);
-        }
-    }
 }
 

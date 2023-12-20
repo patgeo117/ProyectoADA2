@@ -17,6 +17,8 @@ public class ProjectIngenuo {
             {929, 337, 380, 0}
     };
 
+    private static final int SEED = 10; // Puedes cambiar la semilla según tus necesidades
+    private static final Random rand = new Random(SEED);
 
     /**
      * Método principal que inicia la ejecución del programa.
@@ -77,7 +79,7 @@ public class ProjectIngenuo {
      * @return La mitad del calendario generada.
      */
     private static int[][] generarMitadCalendario(int n, int max, int min) {
-        int MAX_INTENTOS = 20000000;
+        int MAX_INTENTOS = 1000000000;
         int[][] mitadCalendario = new int[(n - 1)][n];
 
         int intentos = 0;
@@ -148,32 +150,36 @@ public class ProjectIngenuo {
      * @param n El número de elementos en la permutación.
      * @return La permutación generada.
      */
-
-    public static int[] generarPermutacion(int n) {
-        List<Integer> permutationList = new ArrayList<>();
-        for (int i = 1; i <= n; i++) {
-            permutationList.add(i);
-        }
+    public static int[] generarPermutacion(int n){
+        int[] permutation = IntStream.range(1, n + 1).toArray();
 
         int intentos = 0;
         int maxIntentos = factorial(n);
 
-        int[] check = new int[n];
-
         do {
-            Collections.shuffle(permutationList);
-            for (int i = 0; i < n; i++) {
-                check[i] = permutationList.get(i);
-            }
+            shuffleArray(permutation);
             intentos++;
-        } while (!esPermutacionValida(check) && (intentos < maxIntentos));
+        } while (!esPermutacionValida(permutation) && (intentos < maxIntentos));
 
         if (intentos >= maxIntentos) {
             System.out.println("Se alcanzó el límite de intentos para generar permutaciones válidas.");
             return new int[n]; // O lanzar una excepción según tus necesidades.
         }
 
-        return checkGameTeam(check);
+        return checkGameTeam(permutation);
+    }
+
+    /**
+     * Implementación del algoritmo de Fisher-Yates para permutar un arreglo.
+     * @param array El arreglo a permutar.
+     */
+    private  static void shuffleArray(int[] array) {
+        for (int i = array.length - 1; i > 0; i--) {
+            int index = rand.nextInt(i + 1);
+            int temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
     }
 
     /**

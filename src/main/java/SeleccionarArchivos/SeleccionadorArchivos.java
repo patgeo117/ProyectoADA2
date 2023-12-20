@@ -1,5 +1,6 @@
 package SeleccionarArchivos;
 
+import Planificador.CalcularCostos;
 import Planificador.CalendarioGenerator;
 
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class SeleccionadorArchivos extends JFrame {
                 System.out.println("Tamaño mínimo: " + minimo);
                 System.out.println("Tamaño máximo: " + maximo);
 
-                /*// Inicializar una matriz para almacenar las distancias entre las ciudades sedes
+                // Inicializar una matriz para almacenar las distancias entre las ciudades sedes
                 int[][] distancias = new int[n][n];
                 System.out.println("Matriz de distancias:");
                 // Leer las siguientes n líneas para llenar la matriz de distancias
@@ -76,17 +77,19 @@ public class SeleccionadorArchivos extends JFrame {
                         System.out.print(distancias[i][j] + " ");
                     }
                     System.out.println();
-                }*/
+                }
 
 
                 System.out.println("\nEvaluando datos...");
 
                 CalendarioGenerator calendarioGenerator= new CalendarioGenerator();
+                CalcularCostos calcularCostos = new CalcularCostos();
 
                 try {
                     validarNumeroEquipos(n);
                     int[][] calendario = calendarioGenerator.generarCalendario(n, maximo, minimo);
                     imprimirCalendario(calendario);
+                    calcularCostos.calcularCosto(distancias,calendario);
 
                     // Resto del código
                 } catch (NumeroEquiposImparException e) {
