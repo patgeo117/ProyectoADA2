@@ -1,10 +1,12 @@
-/*
 package SeleccionarArchivos;
+
+import Planificador.CalendarioGenerator;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.Arrays;
 
 public class SeleccionadorArchivos extends JFrame {
         private static final String CARPETA_PREDETERMINADA = "src/main/Datos";
@@ -29,7 +31,7 @@ public class SeleccionadorArchivos extends JFrame {
                         seleccionarArchivo();
                         dispose();
                     } catch (DatosInvalidosException ex) {
-                        manejarExcepcion(ex);
+                        ex.manejarExcepcion(ex);
                     }
                 }
             });
@@ -63,9 +65,9 @@ public class SeleccionadorArchivos extends JFrame {
                 System.out.println("Tamaño mínimo: " + minimo);
                 System.out.println("Tamaño máximo: " + maximo);
 
-                // Inicializar una matriz para almacenar las distancias entre las ciudades sedes
+                /*// Inicializar una matriz para almacenar las distancias entre las ciudades sedes
                 int[][] distancias = new int[n][n];
-                System.out.println("MatrizN de distancias:");
+                System.out.println("Matriz de distancias:");
                 // Leer las siguientes n líneas para llenar la matriz de distancias
                 for (int i = 0; i < n; i++) {
                     String[] valores = lector.readLine().split(" ");
@@ -74,30 +76,35 @@ public class SeleccionadorArchivos extends JFrame {
                         System.out.print(distancias[i][j] + " ");
                     }
                     System.out.println();
+                }*/
+
+
+                System.out.println("\nEvaluando datos...");
+
+                CalendarioGenerator calendarioGenerator= new CalendarioGenerator();
+
+                try {
+                    validarNumeroEquipos(n);
+                    int[][] calendario = calendarioGenerator.generarCalendario(n, maximo, minimo);
+                    imprimirCalendario(calendario);
+
+                    // Resto del código
+                } catch (NumeroEquiposImparException e) {
+                    System.out.println("Error: El número de equipos debe ser par.");
                 }
 
-                // Creación del planificador con fuerza bruta
-                PlanificadorBruto planificador = new PlanificadorBruto(n, distancias, minimo, maximo);
-
-                System.out.println("Evaluando datos...");
-
-                // Resolución del CalDepTournamentScheduler
-                int[][] calendario = planificador.resolverCalendarioBruto();
-
-                // Escritura de salida al archivo
-                escribirSalida("src/main/Datos/salida.txt", n, minimo, maximo, calendario);
-
-                System.out.println("Salida generada con éxito.");
-                planificador.imprimirMejorCalendario();
 
             } catch (NumberFormatException e) {
-                manejarExcepcion(new DatosInvalidosException("Error: Los datos no son válidos."));
+                DatosInvalidosException ex = new DatosInvalidosException("Error al leer el archivo: formato de número inválido.");
+                ex.manejarExcepcion(ex);
             } catch (Exception e) {
-                manejarExcepcion(new DatosInvalidosException("Error desconocido al procesar el archivo."));
+                DatosInvalidosException ex = new DatosInvalidosException("Error al leer el archivo.");
+                ex.manejarExcepcion(ex);
             }
         }
 
         private void escribirSalida(String nombreArchivo, int n, int minimo, int maximo, int[][] calendario) {
+
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
                 writer.write(Integer.toString(n));
                 writer.newLine();
@@ -112,22 +119,49 @@ public class SeleccionadorArchivos extends JFrame {
                     writer.newLine();
                 }
             } catch (IOException e) {
-                manejarExcepcion(new DatosInvalidosException("Error al escribir el archivo de salida."));
+                DatosInvalidosException ex = new DatosInvalidosException("Error al escribir el archivo de salida.");
+                ex.manejarExcepcion(ex);
             }
         }
 
-        private void manejarExcepcion(DatosInvalidosException ex) {
-            System.err.println(ex.getMessage());
-            ex.printStackTrace();
+
+         /**
+          *  Imprime el calendario de partidos en la consola.
+          *
+          * @param calendario La matriz que representa el calendario de partidos.
+          */
+        public static void imprimirCalendario(int[][] calendario) {
+            for (int[] i : calendario) {
+                System.out.println(Arrays.toString(i));
+            }
         }
 
-        class DatosInvalidosException extends Exception {
-            public DatosInvalidosException(String mensaje) {
-                super(mensaje);
+        /**
+         * Valida que el número de equipos sea par. En caso contrario, lanza una excepción.
+        *
+         * @param n El número de equipos.
+        */
+        private  static void validarNumeroEquipos(int n) {
+            if (n % 2 != 0) {
+                throw new NumeroEquiposImparException("El número de equipos debe ser par.");
             }
+        }
+
+        /**
+        * Excepción personalizada para indicar que el número de equipos es impar.
+        */
+        public static class NumeroEquiposImparException extends RuntimeException {
+            /**
+            * Construye una nueva instancia de la excepción con el mensaje especificado.
+            *
+            * @param message El mensaje de la excepción.
+            */
+            public NumeroEquiposImparException(String message) {
+            super(message);
+        }
         }
 
         public static void main(String[] args) {
             SwingUtilities.invokeLater(SeleccionadorArchivos::new);
-        }
-    }*/
+    }
+}

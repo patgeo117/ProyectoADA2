@@ -17,6 +17,7 @@ public class ProjectIngenuo {
             {929, 337, 380, 0}
     };
 
+
     /**
      * Método principal que inicia la ejecución del programa.
      *
@@ -24,7 +25,7 @@ public class ProjectIngenuo {
      */
     public static void main(String[] args) {
         int n = 6;
-        int min = 2; // numero minimo de permanencia consecutiva en la gira
+        int min = 1; // numero minimo de permanencia consecutiva en la gira
         int max = 3; // número maximo de permanencia consecutiva en la gira
 
         try {
@@ -69,7 +70,6 @@ public class ProjectIngenuo {
         return calendario;
     }
 
-
     /**
      * Genera la mitad del calendario aleatorio para un número par de equipos.
      *
@@ -77,7 +77,7 @@ public class ProjectIngenuo {
      * @return La mitad del calendario generada.
      */
     private static int[][] generarMitadCalendario(int n, int max, int min) {
-        int MAX_INTENTOS = 1000000000;
+        int MAX_INTENTOS = 20000000;
         int[][] mitadCalendario = new int[(n - 1)][n];
 
         int intentos = 0;
@@ -88,9 +88,7 @@ public class ProjectIngenuo {
             }
             intentos++;
 
-
-            if (checkNoDuplicatesValue(mitadCalendario) && checkNoValuesInColumns(mitadCalendario)
-                    && MaxGame(max, min,mitadCalendario)) {
+            if (checkNoDuplicatesValue(mitadCalendario) && MaxGame(max, min,mitadCalendario)) {
                 for (int[] i : mitadCalendario) {
                     System.out.println(Arrays.toString(i));
                 }
@@ -116,7 +114,11 @@ public class ProjectIngenuo {
             Set<Integer> valuesColumn = new HashSet<>(matrix.length);
 
             for (int[] ints : matrix) {
-                int absoluteValue = Math.abs(ints[j]);
+                int absoluteValue = ints[j];
+
+                if (absoluteValue < 0) {
+                    absoluteValue = -absoluteValue;
+                }
 
                 if (!valuesColumn.add(absoluteValue)) {
                     return false;
@@ -125,29 +127,10 @@ public class ProjectIngenuo {
         }
         return true;
     }
-
-    /**
-     * Verifica que los valores no coincidan con la columna.
-     *
-     * @param matrix La matriz a verificar.
-     * @return true si no hay duplicados, false en caso contrario.
-     */
-    private static boolean checkNoValuesInColumns(int[][] matrix) {
-        int columnas = matrix[0].length;
-
-        for (int j = 0; j < columnas; j++) {
-            for (int[] ints : matrix) {
-                if (ints[j] == j + 1) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    /**/
 
     /**
      * Verifica si una permutación es válida, es decir, si ningún elemento está en su posición original.
-     *
      * @param permutation La permutación a verificar.
      * @return true si la permutación es válida, false en caso contrario.
      */
@@ -165,8 +148,12 @@ public class ProjectIngenuo {
      * @param n El número de elementos en la permutación.
      * @return La permutación generada.
      */
-    public static int[] generarPermutacion(int n){
-        int[] permutation = IntStream.range(1, n + 1).toArray();
+
+    public static int[] generarPermutacion(int n) {
+        List<Integer> permutationList = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            permutationList.add(i);
+        }
 
         int intentos = 0;
         int maxIntentos = factorial(n);
@@ -174,10 +161,12 @@ public class ProjectIngenuo {
         int[] check = new int[n];
 
         do {
-            shuffleArray(permutation);
-            System.arraycopy(permutation, 0, check, 0, n);
+            Collections.shuffle(permutationList);
+            for (int i = 0; i < n; i++) {
+                check[i] = permutationList.get(i);
+            }
             intentos++;
-        } while (!esPermutacionValida(permutation) && (intentos < maxIntentos));
+        } while (!esPermutacionValida(check) && (intentos < maxIntentos));
 
         if (intentos >= maxIntentos) {
             System.out.println("Se alcanzó el límite de intentos para generar permutaciones válidas.");
@@ -185,20 +174,6 @@ public class ProjectIngenuo {
         }
 
         return checkGameTeam(check);
-    }
-
-    /**
-     * Implementación del algoritmo de Fisher-Yates para permutar un arreglo.
-     * @param array El arreglo a permutar.
-     */
-    private static void shuffleArray(int[] array) {
-        Random rand = new Random();
-        for (int i = array.length - 1; i > 0; i--) {
-            int index = rand.nextInt(i + 1);
-            int temp = array[index];
-            array[index] = array[i];
-            array[i] = temp;
-        }
     }
 
     /**
@@ -229,32 +204,31 @@ public class ProjectIngenuo {
      */
     private static boolean MaxGame(int max, int min, int[][] calDep) {
         for (int j = 0; j < calDep[0].length; j++) {
-            int consecutivos = 0;
+            int consecutivosPositivos = 0;
+            int consecutivosNegativos = 0;
 
             for (int[] ints : calDep) {
                 if (ints[j] > 0) {
-                    consecutivos++;
-                    if (consecutivos > max) {
-                        //System.out.println("Maximo consecutivos permitidos " + consecutivos);
+                    consecutivosPositivos++;
+                    consecutivosNegativos = 0; // Reiniciar el contador de negativos
+                    if (consecutivosPositivos > max) {
+                        return false;
+                    }
+                } else if (ints[j] < 0) {
+                    consecutivosNegativos++;
+                    consecutivosPositivos = 0; // Reiniciar el contador de positivos
+                    if (consecutivosNegativos > max) {
                         return false;
                     }
                 } else {
-                    consecutivos = 0; // Reiniciar el contador si encuentra un valor negativo
-                }
-            }
-            for (int[] ints : calDep) {
-                if (ints[j] < 0) {
-                    consecutivos++;
-                    if (consecutivos > max){
-                        return false;
-                    }
-                } else {
-                    consecutivos = 0; // Reiniciar el contador si encuentra un valor negativo
+                    consecutivosPositivos = 0; // Reiniciar ambos contadores si encuentra un valor positivo o cero
+                    consecutivosNegativos = 0;
                 }
             }
         }
         return true;
     }
+
 
     /**
      * Calcula el costo total del calendario de partidos.
@@ -284,7 +258,7 @@ public class ProjectIngenuo {
      *
      * @param n El número de equipos.
      */
-    private static void validarNumeroEquipos(int n) {
+    private  static void validarNumeroEquipos(int n) {
         if (n % 2 != 0) {
             throw new NumeroEquiposImparException("El número de equipos debe ser par.");
         }

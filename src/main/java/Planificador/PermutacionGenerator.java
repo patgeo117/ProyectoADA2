@@ -2,27 +2,41 @@ package Planificador;
 
 import java.util.*;
 import java.util.stream.IntStream;
-import java.util.stream.IntStream;
 
 /**
  * Esta clase proporciona métodos para generar permutaciones aleatorias de números enteros del 1 al n.
  */
 public class PermutacionGenerator {
 
+    FactorialCalculator factorialCalculator = new FactorialCalculator();
+
+    /**
+     * Verifica si una permutación es válida, es decir, si ningún elemento está en su posición original.
+     * @param permutation La permutación a verificar.
+     * @return true si la permutación es válida, false en caso contrario.
+     */
+    public boolean esPermutacionValida(int[] permutation) {
+        for (int i = 0; i < permutation.length; i++) {
+            if (permutation[i] == i + 1) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Genera una permutación aleatoria de números del 1 al n.
-     *
      * @param n El número de elementos en la permutación.
      * @return La permutación generada.
      */
-    public static int[] generarPermutacion(int n) {
+
+    public  int[] generarPermutacion(int n) {
         List<Integer> permutationList = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             permutationList.add(i);
         }
 
         int intentos = 0;
-        int maxIntentos = FactorialCalculator.factorial(n);
+        int maxIntentos = factorialCalculator.factorial(n);
 
         int[] check = new int[n];
 
@@ -32,7 +46,7 @@ public class PermutacionGenerator {
                 check[i] = permutationList.get(i);
             }
             intentos++;
-        } while (!esPermutacionValida(permutationList) && intentos < maxIntentos);
+        } while (!esPermutacionValida(check) && (intentos < maxIntentos));
 
         if (intentos >= maxIntentos) {
             System.out.println("Se alcanzó el límite de intentos para generar permutaciones válidas.");
@@ -40,21 +54,6 @@ public class PermutacionGenerator {
         }
 
         return checkGameTeam(check);
-    }
-
-    /**
-     * Verifica si una permutación es válida, es decir, si ningún elemento está en su posición original.
-     *
-     * @param permutation La permutación a verificar.
-     * @return true si la permutación es válida, false en caso contrario.
-     */
-    private static boolean esPermutacionValida(List<Integer> permutation) {
-        for (int i = 0; i < permutation.size(); i++) {
-            if (permutation.get(i) == i + 1) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -70,10 +69,6 @@ public class PermutacionGenerator {
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = (i + 1));
 
         // Asinar el signo negativo a la mitad de los equipos.
-        IntStream.range(0, permutaciones.length)
-                .filter(i -> permutaciones[i] > 0)
-                .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));
-
         IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = -(i + 1));

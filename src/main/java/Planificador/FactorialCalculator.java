@@ -12,7 +12,7 @@ public class FactorialCalculator {
      * @param n El número para el cual se calculará el factorial.
      * @return El factorial de n.
      */
-    public static int factorial(int n) {
+    public int factorial(int n) {
         int factorial = 1;
 
         // Itera desde 2 hasta n y multiplica los números en cada iteración

@@ -12,7 +12,7 @@ public class projectIngenuoTwo {
     * El calendario generado no tiene partidos repetidos ni equipos que jueguen
      */
     public static void main(String[] args) {
-        int n = 4; // Puedes ajustar el valor de n según tus necesidades
+        int n = 6; // Puedes ajustar el valor de n según tus necesidades
         int[][] calendario = generarCalendario(n);
 
         // Imprimir el calendario generado
