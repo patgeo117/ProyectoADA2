@@ -42,6 +42,7 @@ public class SeleccionadorArchivos extends JFrame {
         private void mostrarVentana() {
             setVisible(true);
         }
+        private void cerrarVentana(){ setVisible(false);}
 
         private void seleccionarArchivo() throws DatosInvalidosException {
             JFileChooser fileChooser = new JFileChooser(CARPETA_PREDETERMINADA);
@@ -79,6 +80,7 @@ public class SeleccionadorArchivos extends JFrame {
                     System.out.println();
                 }
 
+                cerrarVentana();
 
                 System.out.println("\nEvaluando datos...");
 
@@ -90,6 +92,8 @@ public class SeleccionadorArchivos extends JFrame {
                     int[][] calendario = calendarioGenerator.generarCalendario(n, maximo, minimo);
                     imprimirCalendario(calendario);
                     calcularCostos.calcularCosto(distancias,calendario);
+
+                    escribirSalida("src/main/Datos/salida.txt",n,minimo,maximo,calendario);
 
                     // Resto del código
                 } catch (NumeroEquiposImparException e) {

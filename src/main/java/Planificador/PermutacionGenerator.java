@@ -13,7 +13,7 @@ public class PermutacionGenerator {
     /**
      * Semilla para el generador de números aleatorios.
      */
-    private static final int SEED = 20; // Puedes cambiar la semilla según tus necesidades
+    private static final int SEED = 42; // Puedes cambiar la semilla según tus necesidades
     private static final Random rand = new Random(SEED);
 
     /**

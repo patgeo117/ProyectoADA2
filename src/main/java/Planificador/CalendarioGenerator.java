@@ -39,7 +39,6 @@ public class CalendarioGenerator {
                 calendario[i + n - 1][j] = -mitadCalendario[i][j];
             }
         }
-
         return calendario;
     }
 
@@ -50,7 +49,7 @@ public class CalendarioGenerator {
      * @return La mitad del calendario generada.
      */
     public int[][] generarMitadCalendario(int n, int max, int min) {
-        int MAX_INTENTOS = 1000000000;
+        int MAX_INTENTOS = 100000000;
         int[][] mitadCalendario = new int[(n - 1)][n];
 
         int intentos = 0;
@@ -62,11 +61,6 @@ public class CalendarioGenerator {
             intentos++;
 
             if (matrixValidator.checkNoDuplicatesValue(mitadCalendario) && matrixValidator.MaxGame(max, min,mitadCalendario)) {
-                for (int[] i : mitadCalendario) {
-                    System.out.println(Arrays.toString(i));
-                }
-                System.out.println("--------------------");
-
                 return mitadCalendario;
             }
         }
