@@ -10,8 +10,6 @@ import java.util.stream.IntStream;
  */
 public class ProjectIngenuo {
 
-    int min = 1; // numero minimo de permanencia consecutiva en la gira
-    int max = 3; // número maximo de permanencia consecutiva en la gira
     int[][] matrizCostos = {
             {0, 745, 665, 929},
             {745, 0, 80, 337},
@@ -26,10 +24,12 @@ public class ProjectIngenuo {
      */
     public static void main(String[] args) {
         int n = 6;
+        int min = 2; // numero minimo de permanencia consecutiva en la gira
+        int max = 3; // número maximo de permanencia consecutiva en la gira
 
         try {
             validarNumeroEquipos(n);
-            int[][] calendario = generarCalendario(n);
+            int[][] calendario = generarCalendario(n, max, min);
             imprimirCalendario(calendario);
 
             // Resto del código
@@ -44,8 +44,8 @@ public class ProjectIngenuo {
      * @param n El número de equipos.
      * @return Una matriz de n x 2(n-1) con los partidos de fútbol de ida y vuelta.
      */
-    public static int[][] generarCalendario(int n) {
-        int[][] mitadCalendario = generarMitadCalendario(n);
+    public static int[][] generarCalendario(int n, int max, int min) {
+        int[][] mitadCalendario = generarMitadCalendario(n, max, min);
         return combinarCalendario(n, mitadCalendario);
     }
 
@@ -65,29 +65,8 @@ public class ProjectIngenuo {
                 calendario[i + n - 1][j] = -mitadCalendario[i][j];
             }
         }
-     /*   int aux = 1;
-        while (aux != 0) {
-            if (MaxMin(3, 1, calendario)) {
-                System.out.println("--------BIEN------------");
-                aux = 0;
-            } else {
-                // Generar número aleatorio entre 1 y la mitad de la longitud de la matriz
-                Random rand = new Random();
-                int randomNumber = rand.nextInt(calendario.length / 2) + 1;
-
-                // Intercambiar el número aleatorio con la posición (calendario.length / 2)
-                intercambiarNumeros(calendario, calendario.length / 2, randomNumber);
-            }
-        }*/
 
         return calendario;
-    }
-
-    // Función para intercambiar dos números en una matriz
-    private static void intercambiarNumeros(int[][] matriz, int indice1, int indice2) {
-        int[] temp = matriz[indice1];
-        matriz[indice1] = matriz[indice2];
-        matriz[indice2] = temp;
     }
 
 
@@ -97,7 +76,7 @@ public class ProjectIngenuo {
      * @param n El número de equipos.
      * @return La mitad del calendario generada.
      */
-    private static int[][] generarMitadCalendario(int n) {
+    private static int[][] generarMitadCalendario(int n, int max, int min) {
         int MAX_INTENTOS = 1000000000;
         int[][] mitadCalendario = new int[(n - 1)][n];
 
@@ -110,11 +89,12 @@ public class ProjectIngenuo {
             intentos++;
 
 
-            if (checkNoDuplicatesValue(mitadCalendario) && checkNoValuesInColumns(mitadCalendario)){
+            if (checkNoDuplicatesValue(mitadCalendario) && checkNoValuesInColumns(mitadCalendario) && MaxMin(max, min, mitadCalendario)){
                 for (int[] i : mitadCalendario) {
                     System.out.println(Arrays.toString(i));
                 }
                 System.out.println("--------------------");
+
                 return mitadCalendario;
             }
         }
@@ -232,13 +212,6 @@ public class ProjectIngenuo {
                 .filter(i -> permutaciones[i] > 0)
                 .forEach(i -> permutaciones[permutaciones[i] - 1] = (i + 1));
 
-        if(IntStream.range(0, permutaciones.length)
-                .filter(i -> permutaciones[i] > 0)
-                .count() == IntStream.range(0, permutaciones.length)
-                .filter(i -> permutaciones[i] < 0)
-                .count()){
-        }
-
         // Asinar el signo negativo a la mitad de los equipos.
         IntStream.range(0, permutaciones.length)
                 .filter(i -> permutaciones[i] > 0)
@@ -246,6 +219,7 @@ public class ProjectIngenuo {
 
         return permutaciones;
     }
+
     /**
      * Verificar los minimos y maximos de la gira
      * Nota: Permanencia --> Partidos locales, Gira --> Partidos visitantes
@@ -255,24 +229,35 @@ public class ProjectIngenuo {
      */
     private static boolean MaxMin(int max, int min, int[][] calDep) {
         for (int j = 0; j < calDep[0].length; j++) {
-            int cont = 1;
+            int consecutivos = 0;
+            boolean cumplidoMin = false;
+
             for (int[] ints : calDep) {
                 if (ints[j] > 0) {
-                    cont++;
-                    if (cont > max) {
+                    consecutivos++;
+                    if (consecutivos > max) {
+                        //System.out.println("Maximo consecutivos permitidos " + consecutivos);
                         return false;
                     }
                 } else {
-                    cont = 0;  // Reiniciar el conteo si encuentra un partido de visita (valor negativo)
+                    consecutivos = 0; // Reiniciar el contador si encuentra un valor negativo
+                    cumplidoMin = true; // Se reinicia el contador, y consideramos que ya cumplió con el mínimo
                 }
 
-                if (cont <= min) {
-                    return false;
+                if (consecutivos >= min && consecutivos <= max) {
+                    //System.out.println("Minimo consecutivos permitidos " + consecutivos);
+                    cumplidoMin = true; // Se ha cumplido con el mínimo
                 }
+            }
+
+            if (!cumplidoMin) {
+                //System.out.println("No se cumple el mínimo consecutivo.");
+                return false;
             }
         }
         return true;
     }
+
 
     /**
      * Calcula el costo total del calendario de partidos.
