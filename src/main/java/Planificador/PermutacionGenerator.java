@@ -28,7 +28,6 @@ public class PermutacionGenerator {
      * @param n El número de elementos en la permutación.
      * @return La permutación generada.
      */
-
     public  int[] generarPermutacion(int n) {
         List<Integer> permutationList = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
